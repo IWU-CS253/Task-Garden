@@ -35,3 +35,34 @@ def close_db(error):
         g.sqlite_db.close()
 
 # end adaption from Flaskr
+
+# will need to add water count manipulation later--separate function?
+@app.route('/add_task', methods=['POST'])
+def add_task():
+    db = get_db()
+    db.execute('insert into task (taskName, taskDate, taskCategory, taskstatus) values (?, ?, ?, ?)',
+               [request.form['taskName'], request.form['taskDate'], request.form['taskCategory'], request.form["taskstatus"]])
+    db.commit()
+
+    flash('Sucessfully added task!')
+    return redirect(url_for['index'])
+
+@app.route('/complete_task', methods=['POST'])
+def complete_task():
+    db = get_db()
+    db.execute('update task set taskstatus = true where taskid = ?',
+               [request.form['taskid']])
+    db.commit()
+
+    flash('Sucessfully completed task!')
+    return redirect(url_for['index'])
+
+@app.route('/delete_task', methods=['POST'])
+def delete_task():
+    db = get_db()
+    db.execute('delete from task where taskid = ?'
+               [request.form['taskid']])
+    db.commit()
+
+    flash('Sucessfully completed task!')
+    return redirect(url_for['index'])
