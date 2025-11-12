@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+    DATABASE=os.path.join(app.root_path, 'garden.db'),
     SECRET_KEY='development key',
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
@@ -19,6 +19,13 @@ def connect_db():
     rv.row_factory = sqlite3.Row
     return rv
 
+def init_db():
+    """Initializes the database."""
+    db = get_db()
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+
 def get_db():
     """Opens a new database connection if there is none yet for the
     current application context.
@@ -26,6 +33,12 @@ def get_db():
     if not hasattr(g, 'sqlite_db'):
         g.sqlite_db = connect_db()
     return g.sqlite_db
+
+@app.route('/')
+def index():
+    db = get_db()
+    task = db.execute('select task_name, task_date, task_category, task_status from task')
+    return render_template('index.html', task=task)
 
 
 @app.teardown_appcontext
