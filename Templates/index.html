@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1>
+        To-Do List
+    </h1>
+    <ul class="list-group">
+        {%for i in task%}
+            <li class="list-group-item">
+                {{i}}
+                <button type="button">
+                    Complete
+                </button>
+            </li>
+    </ul>
+{% endblock %}
