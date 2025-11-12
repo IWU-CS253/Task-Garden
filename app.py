@@ -40,8 +40,8 @@ def close_db(error):
 @app.route('/add_task', methods=['POST'])
 def add_task():
     db = get_db()
-    db.execute('insert into task (taskName, taskDate, taskCategory, taskstatus) values (?, ?, ?, ?)',
-               [request.form['taskName'], request.form['taskDate'], request.form['taskCategory'], request.form["taskstatus"]])
+    db.execute('insert into task (task_name, task_date, task_category, task_status) values (?, ?, ?, ?)',
+               [request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
     db.commit()
 
     flash('Sucessfully added task!')
@@ -50,7 +50,7 @@ def add_task():
 @app.route('/complete_task', methods=['POST'])
 def complete_task():
     db = get_db()
-    db.execute('update task set taskstatus = true where taskid = ?',
+    db.execute('update task set task_status = true where taskid = ?',
                [request.form['taskid']])
     db.commit()
 
