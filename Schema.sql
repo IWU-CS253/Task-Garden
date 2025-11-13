@@ -1,9 +1,3 @@
-create table user (
-    user_id integer primary key autoincrement,
-  email text not null,
-  password text not null,
-  water_count INTEGER not null
-);
 
 create table task (
     taskid integer primary key autoincrement,
@@ -12,4 +6,11 @@ create table task (
     task_date text not null,
     task_category text not null,
     task_status BOOLEAN
+);
+
+create table user (
+    user_id integer primary key autoincrement,
+    email text not null,
+    password text not null,
+    water_count INTEGER not null
 );

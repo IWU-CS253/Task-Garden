@@ -19,6 +19,13 @@ def connect_db():
     rv.row_factory = sqlite3.Row
     return rv
 
+def init_db():
+    """Initializes the database."""
+    db = get_db()
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+
 def get_db():
     """Opens a new database connection if there is none yet for the
     current application context.
@@ -26,6 +33,18 @@ def get_db():
     if not hasattr(g, 'sqlite_db'):
         g.sqlite_db = connect_db()
     return g.sqlite_db
+
+@app.route('/')
+def index():
+    db = get_db()
+    task = db.execute('select task_name, task_date, task_category, task_status from task')
+    return render_template('index.html', task=task)
+
+def view_task_list():
+    db = get_db()
+    user_id = session.get('user_id')
+    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
+    return render_template('index.html', tasks=tasks)
 
 
 @app.teardown_appcontext
@@ -66,9 +85,12 @@ def delete_task():
 
     flash('Sucessfully completed task!')
     return redirect(url_for['index'])
-@app.route('/')
-def view_task_list():
-    db = get_db()
-    user_id = session.get('user_id')
-    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
-    return render_template('index.html', tasks=tasks)
+
+@app.route('/view_inventory', methods=['POST'])
+def view_inventory():
+    return render_template('inventory.html')
+
+@app.route('/completed_plants', methods=['POST'])
+def completed_plants():
+    return render_template('completed.html')
+
