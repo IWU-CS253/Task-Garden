@@ -79,3 +79,11 @@ def delete_task():
 
     flash('Sucessfully completed task!')
     return redirect(url_for['index'])
+
+@app.route('/view_inventory', methods=['POST'])
+def view_inventory():
+    pass
+
+@app.route('/completed_plants', methods=['POST'])
+def completed_plants():
+    pass
