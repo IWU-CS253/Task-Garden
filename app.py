@@ -1,6 +1,6 @@
 import os
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, g, redirect, url_for, render_template, flash
+from flask import Flask, request, g, redirect, url_for, render_template, flash, session
 
 # adapted from Flaskr
 # create our little application :)
@@ -39,6 +39,12 @@ def index():
     db = get_db()
     task = db.execute('select task_name, task_date, task_category, task_status from task')
     return render_template('index.html', task=task)
+
+def view_task_list():
+    db = get_db()
+    user_id = session.get('user_id')
+    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
+    return render_template('index.html', tasks=tasks)
 
 
 @app.teardown_appcontext
@@ -87,3 +93,4 @@ def view_inventory():
 @app.route('/completed_plants', methods=['POST'])
 def completed_plants():
     return render_template('completed.html')
+
