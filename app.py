@@ -82,8 +82,8 @@ def delete_task():
 
 @app.route('/view_inventory', methods=['POST'])
 def view_inventory():
-    pass
+    return render_template('inventory.html')
 
 @app.route('/completed_plants', methods=['POST'])
 def completed_plants():
-    pass
+    return render_template('completed.html')
