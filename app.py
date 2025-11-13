@@ -1,6 +1,6 @@
 import os
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, g, redirect, url_for, render_template, flash
+from flask import Flask, request, g, redirect, url_for, render_template, flash, session
 
 # adapted from Flaskr
 # create our little application :)
@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+    DATABASE=os.path.join(app.root_path, 'garden.db'),
     SECRET_KEY='development key',
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
@@ -66,3 +66,9 @@ def delete_task():
 
     flash('Sucessfully completed task!')
     return redirect(url_for['index'])
+@app.route('/')
+def view_task_list():
+    db = get_db()
+    user_id = session.get('user_id')
+    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
+    return render_template('index.html', tasks=tasks)

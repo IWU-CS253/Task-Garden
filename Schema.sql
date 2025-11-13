@@ -1,11 +1,11 @@
-create table task (
+create table user (
     user_id integer primary key autoincrement,
   email text not null,
   password text not null,
   water_count INTEGER not null
 );
 
-create table user (
+create table task (
     taskid integer primary key autoincrement,
     user_id INTEGER not null,
     task_name text not null,
