@@ -3,7 +3,6 @@ from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, g, redirect, url_for, render_template, flash, session
 
 # adapted from Flaskr
-# create our little application :)
 app = Flask(__name__)
 
 # Load default config and override config from an environment variable
@@ -25,6 +24,13 @@ def init_db():
     with app.open_resource('schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
+
+
+@app.cli.command('initdb')
+def initdb_command():
+    """Creates the database tables."""
+    init_db()
+    print('Initialized the database.')
 
 def get_db():
     """Opens a new database connection if there is none yet for the
@@ -55,7 +61,7 @@ def close_db(error):
 
 # end adaption from Flaskr
 
-# will need to add water count manipulation later--separate function?
+# will need to add water count manipulation later--separate function? or just another execute?
 @app.route('/add_task', methods=['POST'])
 def add_task():
     db = get_db()
