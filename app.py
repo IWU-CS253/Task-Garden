@@ -37,7 +37,8 @@ def get_db():
 @app.route('/')
 def index():
     db = get_db()
-    task = db.execute('select task_name, task_date, task_category, task_status from task')
+    user_id = session.get('1')
+    task = db.execute('Select * from task where user_id = ? Order by task_date DESC', "1").fetchall()
     return render_template('index.html', task=task)
 
 def view_task_list():
@@ -59,12 +60,12 @@ def close_db(error):
 @app.route('/add_task', methods=['POST'])
 def add_task():
     db = get_db()
-    db.execute('insert into task (task_name, task_date, task_category, task_status) values (?, ?, ?, ?)',
-               [request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
+    db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, ?)',
+               [request.form['user_id'], request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
     db.commit()
 
     flash('Sucessfully added task!')
-    return redirect(url_for['index'])
+    return redirect(url_for('index'))
 
 @app.route('/complete_task', methods=['POST'])
 def complete_task():

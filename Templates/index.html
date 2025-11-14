@@ -6,6 +6,22 @@
             <h1>
                 To-Do List
             </h1>
+
+                <form action="{{ url_for('add_task') }}" method="post" class="add-entry">
+                    <label>Task Name:
+                        <input type="text" size="30" name="task_name" class="form-control">
+                    </label>
+                    <label>Date:
+                        <input type="text" size="30" name="task_date" class="form-control">
+                    </label>
+                    <label>Category:
+                        <input type="text" size="30" name="task_category" class="form-control">
+                    </label>
+                    <input hidden name="task_status" value="false">
+                    <input hidden name="user_id" value="1">
+                    <input type="submit" value="Add" class="btn btn-primary">
+                </form>
+
             <ul class="list-group">
                 {%for i in task%}
                     <li class="list-group-item">
