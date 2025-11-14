@@ -38,7 +38,7 @@ def get_db():
 def index():
     db = get_db()
     user_id = session.get('1')
-    task = db.execute('Select * from task where user_id = ? Order by task_date DESC', "1").fetchall()
+    task = db.execute('Select * from task where user_id = ? and task_status != true Order by task_date DESC', "1").fetchall()
     return render_template('index.html', task=task)
 
 def view_task_list():
@@ -64,7 +64,7 @@ def add_task():
                [request.form['user_id'], request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
     db.commit()
 
-    flash('Sucessfully added task!')
+    flash('Successfully added task!')
     return redirect(url_for('index'))
 
 @app.route('/complete_task', methods=['POST'])
@@ -74,8 +74,8 @@ def complete_task():
                [request.form['taskid']])
     db.commit()
 
-    flash('Sucessfully completed task!')
-    return redirect(url_for['index'])
+    flash('Successfully completed task!')
+    return redirect(url_for('index'))
 
 @app.route('/delete_task', methods=['POST'])
 def delete_task():
@@ -84,8 +84,8 @@ def delete_task():
                [request.form['taskid']])
     db.commit()
 
-    flash('Sucessfully completed task!')
-    return redirect(url_for['index'])
+    flash('Successfully completed task!')
+    return redirect(url_for('index'))
 
 @app.route('/view_inventory', methods=['POST'])
 def view_inventory():
