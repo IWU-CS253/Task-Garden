@@ -80,7 +80,7 @@ def complete_task():
 @app.route('/delete_task', methods=['POST'])
 def delete_task():
     db = get_db()
-    db.execute('delete from task where taskid = ?'
+    db.execute('delete from task where taskid = ?',
                [request.form['taskid']])
     db.commit()
 
