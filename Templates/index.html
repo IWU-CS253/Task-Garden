@@ -8,15 +8,12 @@
             </h1>
 
                 <form action="{{ url_for('add_task') }}" method="post" class="add-entry">
-                    <label>Task Name:
-                        <input type="text" size="30" name="task_name" class="form-control">
-                    </label>
-                    <label>Date:
-                        <input type="text" size="30" name="task_date" class="form-control">
-                    </label>
-                    <label>Category:
-                        <input type="text" size="30" name="task_category" class="form-control">
-                    </label>
+                    <label for="name">Task Name:</label>
+                        <input type="text" size="30" id="name" name="task_name" class="form-control">
+                    <label for="date">Start date:</label>
+                        <input class="form-control" type="date" id="date" name="task_date" value="2025-11-15" min="2025-11-15" max="2999-12-31">
+                    <label for="category">Category:</label>
+                        <input type="text" size="30" id="category" name="task_category" class="form-control">
                     <input hidden name="task_status" value=false>
                     <input hidden name="user_id" value="1">
                     <input type="submit" value="Add" class="btn btn-primary">
