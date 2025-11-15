@@ -87,6 +87,11 @@ def delete_task():
     flash('Successfully completed task!')
     return redirect(url_for('index'))
 
+@app.route('/filter_tasks', methods=['POST'])
+def filter_tasks():
+    pass
+
+
 @app.route('/view_inventory', methods=['POST'])
 def view_inventory():
     return render_template('inventory.html')
