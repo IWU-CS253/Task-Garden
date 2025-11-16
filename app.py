@@ -47,13 +47,6 @@ def index():
     task = db.execute('Select * from task where user_id = ? and task_status != true Order by task_date DESC', "1").fetchall()
     return render_template('index.html', task=task)
 
-def view_task_list():
-    db = get_db()
-    user_id = session.get('user_id')
-    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
-    return render_template('index.html', tasks=tasks)
-
-
 @app.teardown_appcontext
 def close_db(error):
     """Closes the database again at the end of the request."""
