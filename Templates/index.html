@@ -8,28 +8,63 @@
             </h1>
 
                 <form action="{{ url_for('add_task') }}" method="post" class="add-entry">
-                    <label>Task Name:
-                        <input type="text" size="30" name="task_name" class="form-control">
-                    </label>
-                    <label>Date:
-                        <input type="text" size="30" name="task_date" class="form-control">
-                    </label>
-                    <label>Category:
-                        <input type="text" size="30" name="task_category" class="form-control">
-                    </label>
+                    <label for="name">Task Name:</label>
+                        <input type="text" size="30" id="name" name="task_name" class="form-control">
+                    <label for="date">Start date:</label>
+                        <input class="form-control" type="date" id="date" name="task_date" value="2025-11-15" min="2025-11-15" max="2999-12-31">
+                    <label for="category">Category:</label>
+                        <input type="text" size="30" id="category" name="task_category" class="form-control">
                     <input hidden name="task_status" value=false>
                     <input hidden name="user_id" value="1">
                     <input type="submit" value="Add" class="btn btn-primary">
                 </form>
 
+
+          <form action="{{ url_for('filter_tasks') }}" method="post">
+           <label for="category_dropdown">Category search:</label>
+                <select name="category" id="category_dropdown" class="form-select">
+                {% for entry in task %}
+                    <option value="{{ entry.task_category }}">{{ entry.task_category }}</option>
+                {% endfor %}
+                </select>
+               <input type="submit" value="Search" class="btn btn-success">
+          </form>
+
             <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            Task name
+                        </div>
+                        <div class="col-sm-6">
+                            Task category
+                        </div>
+                    </div>
+                </li>
                 {%for i in task%}
                     <li class="list-group-item">
-                        {{i.task_name}}
-                        <form action="{{ url_for('complete_task') }}" method="post" class="delete-entry">
-                        <input hidden name="taskid" value="{{ i.taskid }}">
-                        <input type="submit" value="Complete" class="btn btn-success">
-                        </form>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                {{ i.task_name }}
+                            </div>
+                            <div class="col-sm-2">
+                                {{ i.task_category }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <form action="{{ url_for('complete_task') }}" method="post" class="delete-entry">
+                                    <input hidden name="taskid" value="{{ i.taskid }}">
+                                    <input type="submit" value="Complete" class="btn btn-success">
+                                </form>
+                            </div>
+                            <div class="col-sm-3">
+                                <form action="{{ url_for('delete_task') }}" method="post" class="delete-entry">
+                                    <input hidden name="taskid" value="{{ i.taskid }}">
+                                    <input type="submit" value="Delete" class="btn btn-danger">
+                                </form>
+                            </div>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
