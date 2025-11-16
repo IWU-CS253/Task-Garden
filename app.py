@@ -106,3 +106,31 @@ def view_inventory():
 def completed_plants():
     return render_template('completed.html')
 
+@app.route('/view_task_list', methods=["POST"])
+def view_task_list():
+    db = get_db()
+    user_id = session.get('user_id')
+    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
+    return render_template('index.html', tasks=tasks)
+
+@app.route('/water_plant', methods=["POST"])
+def water_plant():
+
+    db = get_db()
+    #user_id = session.get("user_id")
+    session["user_id"] = 1
+    user_id=session["user_id"]
+    user_data = db.execute('SELECT water_count, plant_water_count FROM user WHERE user_id=?',
+                           (user_id,)).fetchone()
+
+    if user_data["water_count"] <= 0:
+        flash("insufficient water")
+        return redirect(url_for("index"))
+    else:
+        new_water = user_data["water_count"] - 1
+        new_plant_water = user_data["plant_water_count"] + 1
+
+    db.execute('UPDATE user SET water_count = ?, plant_water_count = ? WHERE user_id = ?', (new_water, new_plant_water, user_id))
+    db.commit()
+    return redirect(url_for("index"))
+

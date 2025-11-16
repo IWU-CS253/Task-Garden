@@ -12,5 +12,6 @@ create table user (
     user_id integer primary key autoincrement,
     email text not null,
     password text not null,
-    water_count INTEGER not null
+    water_count INTEGER not null,
+    plant_water_count INTEGER not null
 );
