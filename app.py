@@ -40,7 +40,7 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
-@app.route('/index', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     db = get_db()
     category = request.args.get('category')
@@ -129,6 +129,3 @@ def water_plant():
     db.execute('UPDATE user SET water_count = ?, plant_water_count = ? WHERE user_id = ?', (new_water, new_plant_water, user_id))
     db.commit()
     return redirect(url_for("index"))
-
-if __name__ == '__main__':
-    app.run(debug=True)
