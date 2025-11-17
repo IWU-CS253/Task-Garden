@@ -73,7 +73,18 @@
             <h1>
                 Garden
             </h1>
-
+{#                <div id="plant_pic">#}
+{#                    <img src="{{url_for('static', filename='plant1.png')}}">#}
+{#                </div>#}
+{#                <script>#}
+{#                    const geology_url = {{ url_for("plant_pic")|tojson }}#}
+{#                    const geology_div = getElementById("plant_pic")#}
+{#                    fetch(geology_url)#}
+{#                        .then(response => response.text)#}
+{#                        .then(text => geology_div.innerHTML = text)#}
+{#                </script>#}
+            <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
+            {{ plant }}
             <form action = "{{ url_for("water_plant") }}" method="post">
                 <input hidden name="user_id" value="{{ user_id }}">
                 <input type="Submit" value="Water" class="btn btn-primary">
