@@ -40,19 +40,19 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
-@app.route('/', methods=['GET'])
+@app.route('/index', methods=['GET'])
 def index():
     db = get_db()
     category = request.args.get('category')
     user_id = 1
 
     if category:
-        cur = db.execute('select * from task where category = ? and user_id = ? order by task_date desc',
+        cur = db.execute('select * from task where task_category = ? and user_id = ? order by task_date desc',
                          [category, user_id])
     else:
         cur = db.execute('Select * from task where user_id = ? Order by task_date DESC',
                          [user_id])
-    categories = db.execute('select distinct category from entries where category is not null').fetchall()
+    categories = db.execute('select distinct task_category from task where task_category is not null').fetchall()
     task = cur.fetchall()
 
     return render_template('index.html', task=task, categories=categories)
