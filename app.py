@@ -47,12 +47,12 @@ def index():
     user_id = 1
 
     if category:
-        cur = db.execute('select * from task where task_category = ? and user_id = ? order by task_date desc',
+        cur = db.execute('select * from task where task_category = ? and user_id = ? and task_status != false order by task_date desc',
                          [category, user_id])
     else:
-        cur = db.execute('Select * from task where user_id = ? Order by task_date DESC',
+        cur = db.execute('Select * from task where user_id = ? and task_status != false Order by task_date DESC',
                          [user_id])
-    categories = db.execute('select distinct task_category from task where task_category is not null').fetchall()
+    categories = db.execute('select distinct task_category from task where task_category is not null and task_status != false').fetchall()
     task = cur.fetchall()
 
     return render_template('index.html', task=task, categories=categories)
@@ -95,11 +95,6 @@ def delete_task():
 
     flash('Successfully completed task!')
     return redirect(url_for('index'))
-
-@app.route('/filter_tasks', methods=['POST'])
-def filter_tasks():
-    pass
-
 
 @app.route('/view_inventory', methods=['POST'])
 def view_inventory():
