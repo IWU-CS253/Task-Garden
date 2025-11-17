@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="container">
+        <h1>
+            Welcome to Task Garden
+        </h1>
+
+        <form action="/login" method="post">
+            <label>
+                Username
+            </label>
+            </br>
+            <input type="text" name="username" placeholder="Username" autofocus>
+            </br></br>
+
+            <label>
+                Password
+            </label>
+            </br>
+            <input type="password" name="password" placeholder="Password">
+            </br></br>
+
+            <input type="submit" value="Log In">
+        </form>
+
+        <h3>
+            Create Account
+        </h3>
+        <a href="#">
+            <button>
+                Create Account
+            </button>
+        </a>
+    </div>
+{% endblock %}
