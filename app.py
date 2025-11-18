@@ -45,7 +45,17 @@ def index():
     db = get_db()
     user_id = session.get('1')
     task = db.execute('Select * from task where user_id = ? and task_status != true Order by task_date DESC', "1").fetchall()
-    return render_template('index.html', task=task)
+    plant_water = db.execute('Select plant_water_count from user where user_id = 1')
+    plant_water = plant_water.fetchone()
+    for row in plant_water:
+        plant_water = row
+    if plant_water < 5:
+        plant = 1
+    elif plant_water < 10:
+        plant = 2
+    else:
+        plant = 3
+    return render_template('index.html', task=task, plant=plant)
 
 @app.teardown_appcontext
 def close_db(error):
