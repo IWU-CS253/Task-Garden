@@ -76,8 +76,20 @@
             <h1>
                 Garden
             </h1>
+            <script>
+                    window.onload = function() {
+                        let img = document.getElementById("plant_image");
 
-            <form action = "{{ url_for('water_plant') }}" method="post">
+                        let plant_display = {{ plant }};
+                        if (plant_display == 2) {
+                            img.src = "{{url_for('static', filename='plant2.png')}}";
+                        } else if (plant_display == 3) {
+                            img.src = "{{url_for('static', filename='plant3.png')}}";
+                        }
+                    };
+            </script>
+            <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
+            <form action = "{{ url_for("water_plant") }}" method="post">
                 <input hidden name="user_id" value="{{ user_id }}">
                 <input type="Submit" value="Water" class="btn btn-primary">
             </form>
