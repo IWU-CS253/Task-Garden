@@ -40,7 +40,7 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     db = get_db()
     user_id = session.get('1')
@@ -56,6 +56,19 @@ def index():
     else:
         plant = 3
     return render_template('index.html', task=task, plant=plant)
+    category = request.args.get('category')
+    user_id = 1
+
+    if category:
+        cur = db.execute('select * from task where task_category = ? and user_id = ? order by task_date desc',
+                         [category, user_id])
+    else:
+        cur = db.execute('Select * from task where user_id = ? Order by task_date DESC',
+                         [user_id])
+    categories = db.execute('select distinct task_category from task where task_category is not null').fetchall()
+    task = cur.fetchall()
+
+    return render_template('index.html', task=task, categories=categories)
 
 @app.teardown_appcontext
 def close_db(error):
@@ -78,9 +91,15 @@ def add_task():
 
 @app.route('/complete_task', methods=['POST'])
 def complete_task():
+    session["user_id"] = 1
+    user_id = session["user_id"]
     db = get_db()
     db.execute('update task set task_status = true where taskid = ?',
                [request.form['taskid']])
+    water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
+    new_water = water["water_count"] + 1
+    db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
+
     db.commit()
 
     flash('Successfully completed task!')
@@ -109,13 +128,6 @@ def view_inventory():
 def completed_plants():
     return render_template('completed.html')
 
-@app.route('/view_task_list', methods=["POST"])
-def view_task_list():
-    db = get_db()
-    user_id = session.get('user_id')
-    tasks = db.execute('Select * from task where user_id = ? Order by task_date DESC', (user_id,)).fetchall()
-    return render_template('index.html', tasks=tasks)
-
 @app.route('/water_plant', methods=["POST"])
 def water_plant():
 
@@ -136,4 +148,3 @@ def water_plant():
     db.execute('UPDATE user SET water_count = ?, plant_water_count = ? WHERE user_id = ?', (new_water, new_plant_water, user_id))
     db.commit()
     return redirect(url_for("index"))
-

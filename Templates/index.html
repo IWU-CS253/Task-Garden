@@ -20,12 +20,15 @@
                 </form>
 
 
-          <form action="{{ url_for('filter_tasks') }}" method="post">
+          <form action="{{ url_for('index') }}" method="post" class="filter-entries">
            <label for="category_dropdown">Category search:</label>
                 <select name="category" id="category_dropdown" class="form-select">
-                {% for entry in task %}
-                    <option value="{{ entry.task_category }}">{{ entry.task_category }}</option>
-                {% endfor %}
+                    <option name="category" value="">All Categories</option>
+                    {% for cat in categories %}
+                        {% if cat.category %}
+                            <option name="category" value="{{ cat.category }}">{{ cat.category }}</option>
+                        {% endif %}
+                    {% endfor %}
                 </select>
                <input type="submit" value="Search" class="btn btn-success">
           </form>
