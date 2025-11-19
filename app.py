@@ -1,9 +1,14 @@
 import os
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, g, redirect, url_for, render_template, flash, session
+from flask_session import Session
 
 # adapted from Flaskr
 app = Flask(__name__)
+
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -171,3 +176,47 @@ def water_plant():
 
     return redirect(url_for("index"))
 
+@app.route('/create_user', methods=["POST"])
+def create_user():
+    db = get_db()
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not email or not password:
+        flash("Please fill out all categories")
+    else:
+        email = db.execute("select email from user where email = ?",
+                           [email]).fetchone()
+        if email["email"] is not None:
+            flash("Account already exists with this email, please login")
+            return render_template("login.html")
+        else:
+            db.execute("insert into user (email, password, water_count, plant_water_count) VALUES (?, ?, 0, 0)",
+                   [email, password])
+
+            return redirect(url_for("index"))
+
+@app.route('/login_user', methods=["POST"])
+def login_user():
+    db = get_db()
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not email or not password:
+        flash("Please fill out all categories")
+
+    else:
+        login = db.execute("select email, password from user where email = ?, password = ?",
+                        [email, password]).fetchone()
+
+        if login["email"] is None:
+            flash("User with given email does not exist, please create account")
+            return render_template("create_user.html")
+
+        elif login["password"] is None:
+            flash("Password is incorrect")
+
+        else:
+            return redirect(url_for("index"))
