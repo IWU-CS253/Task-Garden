@@ -43,6 +43,19 @@ def get_db():
 @app.route('/', methods=['GET'])
 def index():
     db = get_db()
+    user_id = session.get('1')
+    task = db.execute('Select * from task where user_id = ? and task_status != true Order by task_date DESC', "1").fetchall()
+    plant_water = db.execute('Select plant_water_count from user where user_id = 1')
+    plant_water = plant_water.fetchone()
+    for row in plant_water:
+        plant_water = row
+    if plant_water < 5:
+        plant = 1
+    elif plant_water < 10:
+        plant = 2
+    else:
+        plant = 3
+    return render_template('index.html', task=task, plant=plant)
     category = request.args.get('category')
     user_id = 1
 
@@ -78,9 +91,15 @@ def add_task():
 
 @app.route('/complete_task', methods=['POST'])
 def complete_task():
+    session["user_id"] = 1
+    user_id = session["user_id"]
     db = get_db()
     db.execute('update task set task_status = true where taskid = ?',
                [request.form['taskid']])
+    water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
+    new_water = water["water_count"] + 1
+    db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
+
     db.commit()
 
     flash('Successfully completed task!')
