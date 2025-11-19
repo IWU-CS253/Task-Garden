@@ -50,6 +50,9 @@ def index():
     db = get_db()
     user_id = session.get("user_id", 1)
 
+    if user_id == 1:
+        return render_template("login.html")
+
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
         (user_id,)
