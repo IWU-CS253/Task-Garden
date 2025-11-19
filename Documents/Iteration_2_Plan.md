@@ -14,6 +14,8 @@ Julia and Ian on backend/database
   * By Ian & Cass
 * Login screen frontend completed
   * By Doug
+* Login and Create User backend completed
+  * By Julia
 
 **Planned but not finished:**
 * User login page
