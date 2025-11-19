@@ -15,7 +15,7 @@
                     <label for="category">Category:</label>
                         <input type="text" size="30" id="category" name="task_category" class="form-control">
                     <input hidden name="task_status" value=false>
-                    <input hidden name="user_id" value="1">
+                    <input hidden name="user_id" value="{{ user_id }}">
                     <input type="submit" value="Add" class="btn btn-primary">
                 </form>
 
@@ -81,9 +81,9 @@
                         let img = document.getElementById("plant_image");
 
                         let plant_display = {{ plant }};
-                        if (plant_display == 2) {
+                        if (plant_display === 2) {
                             img.src = "{{url_for('static', filename='plant2.png')}}";
-                        } else if (plant_display == 3) {
+                        } else if (plant_display === 3) {
                             img.src = "{{url_for('static', filename='plant3.png')}}";
                         }
                     };
