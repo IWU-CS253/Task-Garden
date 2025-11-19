@@ -76,6 +76,10 @@
             <h1>
                 Garden
             </h1>
+            <form action = "{{ url_for("water_plant") }}" method="post">
+                <input hidden name="user_id" value="{{ user_id }}">
+                <input type="Submit" value="Water" class="btn btn-primary">
+            </form>
             <script>
                     window.onload = function() {
                         let img = document.getElementById("plant_image");
@@ -89,10 +93,7 @@
                     };
             </script>
             <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
-            <form action = "{{ url_for("water_plant") }}" method="post">
-                <input hidden name="user_id" value="{{ user_id }}">
-                <input type="Submit" value="Water" class="btn btn-primary">
-            </form>
+
         </div>
     </div>
 {% endblock %}
