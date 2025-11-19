@@ -43,32 +43,37 @@ def get_db():
 @app.route('/', methods=['GET'])
 def index():
     db = get_db()
-    user_id = session.get('1')
-    task = db.execute('Select * from task where user_id = ? and task_status != true Order by task_date DESC', "1").fetchall()
-    plant_water = db.execute('Select plant_water_count from user where user_id = 1')
-    plant_water = plant_water.fetchone()
-    for row in plant_water:
-        plant_water = row
+    user_id = session.get("user_id", 1)
+
+    result = db.execute(
+        "SELECT plant_water_count FROM user WHERE user_id = ?",
+        (user_id,)
+    ).fetchone()
+
+    if result:
+        plant_water = result["plant_water_count"]
+    else:
+        plant_water = 0
+
     if plant_water < 5:
         plant = 1
     elif plant_water < 10:
         plant = 2
     else:
         plant = 3
-    return render_template('index.html', task=task, plant=plant)
+
     category = request.args.get('category')
-    user_id = 1
 
     if category:
-        cur = db.execute('select * from task where task_category = ? and user_id = ? and task_status != false order by task_date desc',
+        cur = db.execute('select * from task where task_category = ? and user_id = ? and task_status = 0 order by task_date desc',
                          [category, user_id])
     else:
-        cur = db.execute('Select * from task where user_id = ? and task_status != false Order by task_date DESC',
+        cur = db.execute('Select * from task where user_id = ? and task_status = 0 Order by task_date DESC',
                          [user_id])
-    categories = db.execute('select distinct task_category from task where task_category is not null and task_status != false').fetchall()
+    categories = db.execute('select distinct task_category from task where task_category is not null and task_status = 0').fetchall()
     task = cur.fetchall()
 
-    return render_template('index.html', task=task, categories=categories)
+    return render_template('index.html', task=task, plant=plant, categories=categories)
 
 @app.teardown_appcontext
 def close_db(error):
@@ -82,6 +87,7 @@ def close_db(error):
 @app.route('/add_task', methods=['POST'])
 def add_task():
     db = get_db()
+
     db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, ?)',
                [request.form['user_id'], request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
     db.commit()
@@ -91,9 +97,9 @@ def add_task():
 
 @app.route('/complete_task', methods=['POST'])
 def complete_task():
-    session["user_id"] = 1
-    user_id = session["user_id"]
     db = get_db()
+    user_id = session.get("user_id", 1)
+
     db.execute('update task set task_status = true where taskid = ?',
                [request.form['taskid']])
     water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
@@ -119,27 +125,49 @@ def delete_task():
 def view_inventory():
     return render_template('inventory.html')
 
+@app.route('/completed_tasks', methods=['POST'])
+def view_completed_tasks():
+    db = get_db()
+    user_id = session.get("user_id", 1)
+
+    task = db.execute('Select * from task where user_id = ? and task_status = 0 Order by task_date DESC',
+                     [user_id]).fetchall()
+
+    return render_template('inventory.html', task=task)
+
 @app.route('/completed_plants', methods=['POST'])
 def completed_plants():
     return render_template('completed.html')
 
 @app.route('/water_plant', methods=["POST"])
 def water_plant():
-
     db = get_db()
-    #user_id = session.get("user_id")
-    session["user_id"] = 1
-    user_id=session["user_id"]
+    user_id = session.get("user_id", 1)
+
     user_data = db.execute('SELECT water_count, plant_water_count FROM user WHERE user_id=?',
                            (user_id,)).fetchone()
 
-    if user_data["water_count"] <= 0:
+    if user_data["water_count"] is not None:
+        water = user_data["water_count"]
+    else:
+        water = 0
+    if user_data["plant_water_count"] is not None:
+        plant_water = user_data["plant_water_count"]
+    else:
+        plant_water = 0
+
+    if water <= 0:
         flash("insufficient water")
         return redirect(url_for("index"))
-    else:
-        new_water = user_data["water_count"] - 1
-        new_plant_water = user_data["plant_water_count"] + 1
 
-    db.execute('UPDATE user SET water_count = ?, plant_water_count = ? WHERE user_id = ?', (new_water, new_plant_water, user_id))
+    new_water = water - 1
+    new_plant_water = plant_water + 1
+
+    db.execute(
+        'UPDATE user SET water_count = ?, plant_water_count = ? WHERE user_id = ?',
+        (new_water, new_plant_water, user_id)
+    )
     db.commit()
+
     return redirect(url_for("index"))
+
