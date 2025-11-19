@@ -37,6 +37,7 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
+
 def get_db():
     """Opens a new database connection if there is none yet for the
     current application context.
@@ -45,13 +46,14 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     db = get_db()
     user_id = session.get("user_id", 1)
 
-    if user_id == 1:
-        return render_template("login.html")
+    # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
+    # if user_id == 1:
+    #     return render_template("login.html")
 
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
@@ -70,7 +72,7 @@ def index():
     else:
         plant = 3
 
-    category = request.args.get('category')
+    category = request.values.get('category')
 
     if category:
         cur = db.execute('select * from task where task_category = ? and user_id = ? and task_status = 0 order by task_date desc',
@@ -78,10 +80,12 @@ def index():
     else:
         cur = db.execute('Select * from task where user_id = ? and task_status = 0 Order by task_date DESC',
                          [user_id])
-    categories = db.execute('select distinct task_category from task where task_category is not null and task_status = 0').fetchall()
+    categories = db.execute('select distinct task_category from task where user_id = ? and task_category is not null and task_status = 0',
+                            [user_id]).fetchall()
     task = cur.fetchall()
 
-    return render_template('index.html', task=task, plant=plant, categories=categories)
+    return render_template('index.html', task=task, plant=plant, categories=categories, user_id=user_id)
+
 
 @app.teardown_appcontext
 def close_db(error):
@@ -103,6 +107,7 @@ def add_task():
     flash('Successfully added task!')
     return redirect(url_for('index'))
 
+
 @app.route('/complete_task', methods=['POST'])
 def complete_task():
     db = get_db()
@@ -119,6 +124,7 @@ def complete_task():
     flash('Successfully completed task!')
     return redirect(url_for('index'))
 
+
 @app.route('/delete_task', methods=['POST'])
 def delete_task():
     db = get_db()
@@ -129,9 +135,11 @@ def delete_task():
     flash('Successfully completed task!')
     return redirect(url_for('index'))
 
+
 @app.route('/view_inventory', methods=['POST'])
 def view_inventory():
     return render_template('inventory.html')
+
 
 @app.route('/completed_tasks', methods=['POST'])
 def view_completed_tasks():
@@ -143,9 +151,11 @@ def view_completed_tasks():
 
     return render_template('inventory.html', task=task)
 
+
 @app.route('/completed_plants', methods=['POST'])
 def completed_plants():
     return render_template('completed.html')
+
 
 @app.route('/water_plant', methods=["POST"])
 def water_plant():
@@ -179,6 +189,7 @@ def water_plant():
 
     return redirect(url_for("index"))
 
+
 @app.route('/create_user', methods=["POST"])
 def create_user():
     db = get_db()
@@ -187,11 +198,11 @@ def create_user():
     password = request.form.get("password")
 
     if not email or not password:
-        flash("Please fill out all categories")
+        flash("Please fill out all fields")
     else:
         email = db.execute("select email from user where email = ?",
                            [email]).fetchone()
-        if email["email"] is not None:
+        if email:
             flash("Account already exists with this email, please login")
             return render_template("login.html")
         else:
@@ -199,6 +210,7 @@ def create_user():
                    [email, password])
 
             return redirect(url_for("index"))
+
 
 @app.route('/login_user', methods=["POST"])
 def login_user():
@@ -208,10 +220,10 @@ def login_user():
     password = request.form.get("password")
 
     if not email or not password:
-        flash("Please fill out all categories")
+        flash("Please fill out all fields")
 
     else:
-        login = db.execute("select email, password from user where email = ?, password = ?",
+        login = db.execute("select user_id, email, password from user where email = ?, password = ?",
                         [email, password]).fetchone()
 
         if login["email"] is None:
