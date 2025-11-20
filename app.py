@@ -52,8 +52,8 @@ def index():
     user_id = session.get("user_id", 1)
 
     # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
-    # if user_id == 1:
-    #     return render_template("login.html")
+    if user_id == 1:
+        return render_template("login.html")
 
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
@@ -223,7 +223,7 @@ def login_user():
         flash("Please fill out all fields")
 
     else:
-        login = db.execute("select user_id, email, password from user where email = ?, password = ?",
+        login = db.execute("select user_id, email, password from user where email = ? and password = ?",
                         [email, password]).fetchone()
 
         if login["email"] is None:
