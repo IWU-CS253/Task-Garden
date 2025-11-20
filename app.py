@@ -52,8 +52,8 @@ def index():
     user_id = session.get("user_id", 1)
 
     # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
-    if user_id == 1:
-        return render_template("login.html")
+    # if user_id == 1:
+    #     return render_template("login.html")
 
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
