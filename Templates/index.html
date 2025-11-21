@@ -6,7 +6,6 @@
             <h1>
                 To-Do List
             </h1>
-
                 <form action="{{ url_for('add_task') }}" method="post" class="add-entry">
                     <label for="name">Task Name:</label>
                         <input type="text" size="30" id="name" name="task_name" class="form-control">
@@ -76,6 +75,9 @@
             <h1>
                 Garden
             </h1>
+            <div class="row">
+                <p>Current water: {{ user_water }}</p>
+            </div>
             <form action = "{{ url_for("water_plant") }}" method="post">
                 <input hidden name="user_id" value="{{ user_id }}">
                 <input type="Submit" value="Water" class="btn btn-primary">
@@ -93,7 +95,9 @@
                     };
             </script>
             <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
-
+            <div class="row">
+                <p>Water to put plant in garden: {{ water_to_garden }}</p>
+            </div>
         </div>
     </div>
 {% endblock %}

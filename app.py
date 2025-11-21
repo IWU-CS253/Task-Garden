@@ -53,8 +53,8 @@ def index():
     user_id = session.get("user_id", 1)
 
     # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
-    if user_id == 1:
-        return render_template("login.html")
+    # if user_id == 1:
+    #     return render_template("login.html")
 
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
@@ -68,12 +68,22 @@ def index():
     else:
         plant_water = 11
 
+    plant = 1
+
     if plant_water == 0:
         plant = 3
     elif plant_water < 5 or plant_water == 11:
         plant = 1
     elif plant_water < 10:
         plant = 2
+
+    water_to_garden = 0
+    if plant_water == 11:
+        water_to_garden = 10
+    elif result["plant_water_count"] % 10 == 0:
+        water_to_garden = "Completed!"
+    else:
+        water_to_garden = 10 - (result["plant_water_count"] % 10)
 
 
     category = request.values.get('category')
@@ -88,7 +98,14 @@ def index():
                             [user_id]).fetchall()
     task = cur.fetchall()
 
-    return render_template('index.html', task=task, plant=plant, categories=categories, user_id=user_id)
+    user_water = db.execute(
+        "SELECT water_count FROM user WHERE user_id = ?",
+        (user_id,)
+    ).fetchone()
+
+    water_count = user_water["water_count"]
+
+    return render_template('index.html', task=task, plant=plant, categories=categories, user_id=user_id, user_water=water_count, water_to_garden=water_to_garden)
 
 
 @app.teardown_appcontext
