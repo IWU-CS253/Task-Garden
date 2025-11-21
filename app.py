@@ -49,6 +49,7 @@ def get_db():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """Main page"""
     db = get_db()
     user_id = session.get("user_id", 1)
 
@@ -56,11 +57,14 @@ def index():
     # if user_id == 1:
     #     return render_template("login.html")
 
+    # Gets the amount of times the user has watered a plant
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
         (user_id,)
     ).fetchone()
 
+    # Determines how much a given plant has been watered
+    # If no plant has ever been watered, it is set to 11
     if result and result["plant_water_count"] == 0:
         plant_water = 11
     elif result:
@@ -68,8 +72,8 @@ def index():
     else:
         plant_water = 11
 
+    # Determines which plant picture to display
     plant = 1
-
     if plant_water == 0:
         plant = 3
     elif plant_water < 5 or plant_water == 11:
@@ -77,7 +81,7 @@ def index():
     elif plant_water < 10:
         plant = 2
 
-    water_to_garden = 0
+    # Determines how much more water a plant needs to be finished growing
     if plant_water == 11:
         water_to_garden = 10
     elif result["plant_water_count"] % 10 == 0:
@@ -88,6 +92,7 @@ def index():
 
     category = request.values.get('category')
 
+    # Gets all unique categories from uncompleted tasks
     if category:
         cur = db.execute('select * from task where task_category = ? and user_id = ? and task_status = 0 order by task_date desc',
                          [category, user_id])
@@ -98,6 +103,7 @@ def index():
                             [user_id]).fetchall()
     task = cur.fetchall()
 
+    # Gets the total water the user has
     user_water = db.execute(
         "SELECT water_count FROM user WHERE user_id = ?",
         (user_id,)
@@ -119,6 +125,7 @@ def close_db(error):
 # will need to add water count manipulation later--separate function? or just another execute?
 @app.route('/add_task', methods=['POST'])
 def add_task():
+    """Adds a task to the database."""
     db = get_db()
 
     db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, ?)',
@@ -131,11 +138,15 @@ def add_task():
 
 @app.route('/complete_task', methods=['POST'])
 def complete_task():
+    """Marks a given task as completed"""
     db = get_db()
     user_id = session.get("user_id", 1)
 
+    # Marks the task clicked on as completed
     db.execute('update task set task_status = true where taskid = ?',
                [request.form['taskid']])
+
+    # Gives the user +1 water
     water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
     new_water = water["water_count"] + 1
     db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
@@ -148,6 +159,7 @@ def complete_task():
 
 @app.route('/delete_task', methods=['POST'])
 def delete_task():
+    """Completely deletes a task without giving water to the user."""
     db = get_db()
     db.execute('delete from task where taskid = ?',
                [request.form['taskid']])
@@ -159,6 +171,7 @@ def delete_task():
 
 @app.route('/completed_tasks', methods=['GET'])
 def view_completed_tasks():
+    """Allows the user to view their completed tasks."""
     db = get_db()
     user_id = session.get("user_id", 1)
 
@@ -170,12 +183,17 @@ def view_completed_tasks():
 
 @app.route('/completed_plants', methods=['GET'])
 def completed_plants():
+    """Shows the user all the plants they have completed"""
     db = get_db()
     user_id = session.get("user_id", 1)
+
+    # Gets the amount of times the user has watered a plant
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
         (user_id,)
     ).fetchone()
+
+    # Determines how many plants to display
     if result:
         plants_completed = int(result["plant_water_count"]/10)
     else:
@@ -185,9 +203,11 @@ def completed_plants():
 
 @app.route('/water_plant', methods=["POST"])
 def water_plant():
+    """Lets user water the current plant"""
     db = get_db()
     user_id = session.get("user_id", 1)
 
+    # Gets water data from database
     user_data = db.execute('SELECT water_count, plant_water_count FROM user WHERE user_id=?',
                            (user_id,)).fetchone()
 
@@ -200,6 +220,7 @@ def water_plant():
     else:
         plant_water = 0
 
+    # If the user doesn't have any water, send them back to the main page
     if water <= 0:
         flash("insufficient water")
         return redirect(url_for("index"))
@@ -207,6 +228,7 @@ def water_plant():
     new_water = water - 1
     new_plant_water = plant_water + 1
 
+    # Update the database with the new water values
     db.execute(
         'UPDATE user SET water_count = ?, plant_water_count = ? WHERE user_id = ?',
         (new_water, new_plant_water, user_id)
@@ -218,11 +240,13 @@ def water_plant():
 
 @app.route('/create_user', methods=["POST"])
 def create_user():
+    """Allows the user to sign up"""
     db = get_db()
 
     email = request.form.get("email")
     password = request.form.get("password")
 
+    # Prompts user to fill out the form
     if not email or not password:
         flash("Please fill out all fields")
     else:
@@ -232,6 +256,7 @@ def create_user():
             flash("Account already exists with this email, please login")
             return render_template("login.html")
         else:
+            # Put the username and password in the database
             db.execute("insert into user (email, password, water_count, plant_water_count) VALUES (?, ?, 0, 0)",
                    [email, password])
 
@@ -240,23 +265,28 @@ def create_user():
 
 @app.route('/login_user', methods=["POST"])
 def login_user():
+    """Allows the user to log into their account"""
     db = get_db()
 
     email = request.form.get("email")
     password = request.form.get("password")
 
+    # Prompts user to fill out form
     if not email or not password:
         flash("Please fill out all fields")
         return render_template("login.html")
 
+    # Searches for the email and password
     else:
         login = db.execute("select user_id, email, password from user where email = ? and password = ?",
                         [email, password]).fetchone()
 
+        # Prompts user to create account if email doesn't exist
         if login["email"] is None:
             flash("User with given email does not exist, please create account")
             return render_template("create_user.html")
 
+        # Prompts user to retry a password if that is incorrect
         elif login["password"] is None:
             flash("Password is incorrect")
 
