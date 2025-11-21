@@ -4,8 +4,33 @@
     <div class="row">
         <div class="col-sm-12">
             <h1>
-                Inventory
+                Completed Tasks
             </h1>
         </div>
+    <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            Task name
+                        </div>
+                        <div class="col-sm-6">
+                            Task category
+                        </div>
+                    </div>
+                </li>
+                {%for i in task%}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                {{ i.task_name }}
+                            </div>
+                            <div class="col-sm-2">
+                                {{ i.task_category }}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+    </ul>
     </div>
+
 {% endblock %}

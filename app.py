@@ -140,17 +140,12 @@ def delete_task():
     return redirect(url_for('index'))
 
 
-@app.route('/view_inventory', methods=['POST'])
-def view_inventory():
-    return render_template('inventory.html')
-
-
 @app.route('/completed_tasks', methods=['GET'])
 def view_completed_tasks():
     db = get_db()
     user_id = session.get("user_id", 1)
 
-    task = db.execute('Select * from task where user_id = ? and task_status = 0 Order by task_date DESC',
+    task = db.execute('Select * from task where user_id = ? and task_status = 1 Order by task_date DESC',
                      [user_id]).fetchall()
 
     return render_template('inventory.html', task=task)
