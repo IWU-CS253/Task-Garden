@@ -1,28 +1,33 @@
-{% extends "layout.html" %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Task Garden</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    </head>
 
-{% block body %}
-    <div class="container">
-        <h1>
-            Create Account
-        </h1>
+    <body>
+        <div class="container">
+            <h1>
+                Create Account
+            </h1>
 
-        <form action="/login_user" method="post" class="form-group">
-            <label for="email">
-                Email
-            </label>
-            </br>
-            <input type="email" name="Email" placeholder="Email" autofocus>
-            </br></br>
+            <form action="/login_user" method="post" class="form-group">
+                <label for="email">
+                    Email
+                </label>
+                </br>
+                <input type="email" name="Email" placeholder="Email" autofocus>
+                </br></br>
 
-            <label>
-                Password
-            </label>
-            </br>
-            <input type="password" name="password" placeholder="Password">
-            </br></br>
+                <label>
+                    Password
+                </label>
+                </br>
+                <input type="password" name="password" placeholder="Password">
+                </br></br>
 
-            <input type="submit" value="Create Account">
-        </form>
+                <input type="submit" value="Create Account">
+            </form>
 
         <h3>
             Have an account?

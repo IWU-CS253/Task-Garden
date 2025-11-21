@@ -1,28 +1,33 @@
-{% extends "layout.html" %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Task Garden</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    </head>
 
-{% block body %}
-    <div class="container">
-        <h1>
-            Welcome to Task Garden
-        </h1>
+    <body>
+        <div class="container">
+            <h1>
+                Welcome to Task Garden
+            </h1>
 
-        <form action="{{ url_for('login_user') }}" method="post">
-            <label>
-                Email
-            </label>
-            </br>
-            <input type="email" name="email" placeholder="email" autofocus>
-            </br></br>
+            <form action="{{ url_for('login_user') }}" method="post">
+                <label>
+                    Email
+                </label>
+                </br>
+                <input type="email" name="email" placeholder="email" autofocus>
+                </br></br>
 
-            <label>
-                Password
-            </label>
-            </br>
-            <input type="password" name="password" placeholder="Password">
-            </br></br>
+                <label>
+                    Password
+                </label>
+                </br>
+                <input type="password" name="password" placeholder="Password">
+                </br></br>
 
-            <input type="submit" value="Log In">
-        </form>
+                <input type="submit" value="Log In">
+            </form>
 
         <h3>
             Create Account
@@ -30,7 +35,12 @@
         <a href="/create_user_page">
             <button>
                 Create Account
-            </button>
-        </a>
-    </div>
-{% endblock %}
+            </h3>
+            <a href="/create_user">
+                <button>
+                    Create Account
+                </button>
+            </a>
+        </div>
+    </body>
+</html>
