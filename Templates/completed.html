@@ -8,4 +8,11 @@
             </h1>
         </div>
     </div>
+    <div class="row">
+        {%for i in range(0, plants_completed)%}
+            <div class="col-sm-4">
+                <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image">
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
