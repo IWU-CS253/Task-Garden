@@ -3,15 +3,15 @@
 {% block body %}
     <div class="container">
         <h1>
-            Welcome to Task Garden
+            Create Account
         </h1>
 
-        <form action="{{ url_for('login_user') }}" method="post">
-            <label>
-                Username
+        <form action="/login_user" method="post" class="form-group">
+            <label for="email">
+                Email
             </label>
             </br>
-            <input type="email" name="email" placeholder="email" autofocus>
+            <input type="email" name="Email" placeholder="Email" autofocus>
             </br></br>
 
             <label>
@@ -21,15 +21,15 @@
             <input type="password" name="password" placeholder="Password">
             </br></br>
 
-            <input type="submit" value="Log In">
+            <input type="submit" value="Create Account">
         </form>
 
         <h3>
-            Create Account
+            Have an account?
         </h3>
-        <a href="#">
+        <a href="/login">
             <button>
-                Create Account
+                Login
             </button>
         </a>
     </div>
