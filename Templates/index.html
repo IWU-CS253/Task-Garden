@@ -6,7 +6,7 @@
             <h1>
                 To-Do List
             </h1>
-
+                {# Adding tasks form #}
                 <form action="{{ url_for('add_task') }}" method="post" class="add-entry">
                     <label for="name">Task Name:</label>
                         <input type="text" size="30" id="name" name="task_name" class="form-control">
@@ -19,7 +19,7 @@
                     <input type="submit" value="Add" class="btn btn-primary">
                 </form>
 
-
+            {# filter tasks form #}
           <form action="{{ url_for('index') }}" method="post" class="filter-entries">
            <label for="category_dropdown">Category search:</label>
                 <select name="category" id="category_dropdown" class="form-select">
@@ -33,6 +33,7 @@
                <input type="submit" value="Search" class="btn btn-success">
           </form>
 
+            {# Display task name and task category #}
             <ul class="list-group">
                 <li class="list-group-item">
                     <div class="row">
@@ -44,6 +45,7 @@
                         </div>
                     </div>
                 </li>
+            {# Display tasks along with their categories #}
                 {%for i in task%}
                     <li class="list-group-item">
                         <div class="row">
@@ -55,6 +57,7 @@
                             </div>
                         </div>
                         <div class="row">
+                            {# Complete and delete task buttons #}
                             <div class="col-sm-2">
                                 <form action="{{ url_for('complete_task') }}" method="post" class="delete-entry">
                                     <input hidden name="taskid" value="{{ i.taskid }}">
@@ -76,6 +79,10 @@
             <h1>
                 Garden
             </h1>
+            <div class="row">
+                <p>Current water: {{ user_water }}</p>
+            </div>
+            {# Button waters the current plant if they have available water #}
             <form action = "{{ url_for("water_plant") }}" method="post">
                 <input hidden name="user_id" value="{{ user_id }}">
                 <input type="Submit" value="Water" class="btn btn-primary">
@@ -83,7 +90,7 @@
             <script>
                     window.onload = function() {
                         let img = document.getElementById("plant_image");
-
+                        {# Determines which plant to display #}
                         let plant_display = {{ plant }};
                         if (plant_display === 2) {
                             img.src = "{{url_for('static', filename='plant2.png')}}";
@@ -92,8 +99,11 @@
                         }
                     };
             </script>
+            {# Show plant 1 as the default state #}
             <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
-
+            <div class="row">
+                <p>Water to put plant in garden: {{ water_to_garden }}</p>
+            </div>
         </div>
     </div>
 {% endblock %}
