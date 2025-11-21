@@ -53,8 +53,8 @@ def index():
     user_id = session.get("user_id", 1)
 
     # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
-    # if user_id == 1:
-    #     return render_template("login.html")
+    if user_id == 1:
+        return render_template("login.html")
 
     result = db.execute(
         "SELECT plant_water_count FROM user WHERE user_id = ?",
@@ -230,6 +230,7 @@ def login_user():
 
     if not email or not password:
         flash("Please fill out all fields")
+        return render_template("login.html")
 
     else:
         login = db.execute("select user_id, email, password from user where email = ? and password = ?",
@@ -244,3 +245,11 @@ def login_user():
 
         else:
             return redirect(url_for("index"))
+
+@app.route('/create_user_page', methods=["GET"])
+def create_user_page():
+    return render_template('new_user.html')
+
+@app.route('/login_user_page', methods=["GET"])
+def login_user_page():
+    return render_template('login.html')
