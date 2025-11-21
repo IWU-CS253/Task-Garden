@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="container">
+        <h1>
+            Create Account
+        </h1>
+
+        <form action="/login_user" method="post" class="form-group">
+            <label for="email">
+                Email
+            </label>
+            </br>
+            <input type="email" name="Email" placeholder="Email" autofocus>
+            </br></br>
+
+            <label>
+                Password
+            </label>
+            </br>
+            <input type="password" name="password" placeholder="Password">
+            </br></br>
+
+            <input type="submit" value="Create Account">
+        </form>
+
+        <h3>
+            Have an account?
+        </h3>
+        <a href="/login">
+            <button>
+                Login
+            </button>
+        </a>
+    </div>
+{% endblock %}
