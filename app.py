@@ -1,4 +1,5 @@
 import os
+from math import floor
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, g, redirect, url_for, render_template, flash, session
 from flask_session import Session
@@ -60,17 +61,20 @@ def index():
         (user_id,)
     ).fetchone()
 
-    if result:
-        plant_water = result["plant_water_count"]
+    if result and result["plant_water_count"] == 0:
+        plant_water = 11
+    elif result:
+        plant_water = result["plant_water_count"] % 10
     else:
-        plant_water = 0
+        plant_water = 11
 
-    if plant_water < 5:
+    if plant_water == 0:
+        plant = 3
+    elif plant_water < 5 or plant_water == 11:
         plant = 1
     elif plant_water < 10:
         plant = 2
-    else:
-        plant = 3
+
 
     category = request.values.get('category')
 
@@ -141,7 +145,7 @@ def view_inventory():
     return render_template('inventory.html')
 
 
-@app.route('/completed_tasks', methods=['POST'])
+@app.route('/completed_tasks', methods=['GET'])
 def view_completed_tasks():
     db = get_db()
     user_id = session.get("user_id", 1)
@@ -152,9 +156,19 @@ def view_completed_tasks():
     return render_template('inventory.html', task=task)
 
 
-@app.route('/completed_plants', methods=['POST'])
+@app.route('/completed_plants', methods=['GET'])
 def completed_plants():
-    return render_template('completed.html')
+    db = get_db()
+    user_id = session.get("user_id", 1)
+    result = db.execute(
+        "SELECT plant_water_count FROM user WHERE user_id = ?",
+        (user_id,)
+    ).fetchone()
+    if result:
+        plants_completed = int(result["plant_water_count"]/10)
+    else:
+        plants_completed = 0
+    return render_template('completed.html', plants_completed=plants_completed)
 
 
 @app.route('/water_plant', methods=["POST"])
@@ -223,7 +237,7 @@ def login_user():
         flash("Please fill out all fields")
 
     else:
-        login = db.execute("select user_id, email, password from user where email = ?, password = ?",
+        login = db.execute("select user_id, email, password from user where email = ? and password = ?",
                         [email, password]).fetchone()
 
         if login["email"] is None:
