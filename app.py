@@ -61,17 +61,20 @@ def index():
         (user_id,)
     ).fetchone()
 
-    if result:
-        plant_water = result["plant_water_count"]
+    if result and result["plant_water_count"] == 0:
+        plant_water = 11
+    elif result:
+        plant_water = result["plant_water_count"] % 10
     else:
-        plant_water = 0
+        plant_water = 11
 
-    if plant_water < 5:
+    if plant_water == 0:
+        plant = 3
+    elif plant_water < 5 or plant_water == 11:
         plant = 1
     elif plant_water < 10:
         plant = 2
-    else:
-        plant = 3
+
 
     category = request.values.get('category')
 
