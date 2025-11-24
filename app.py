@@ -54,8 +54,8 @@ def index():
     user_id = session.get("user_id", 1)
 
     # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
-    # if user_id == 1:
-    #     return render_template("login.html")
+    if user_id == 1:
+        return render_template("login.html")
 
     # Gets the amount of times the user has watered a plant
     result = db.execute(
@@ -243,16 +243,16 @@ def create_user():
     """Allows the user to sign up"""
     db = get_db()
 
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.form["email"]
+    password = request.form["password"]
 
     # Prompts user to fill out the form
     if not email or not password:
         flash("Please fill out all fields")
     else:
-        email = db.execute("select email from user where email = ?",
+        email_check = db.execute("select email from user where email = ?",
                            [email]).fetchone()
-        if email:
+        if email_check:
             flash("Account already exists with this email, please login")
             return render_template("login.html")
         else:
@@ -260,7 +260,7 @@ def create_user():
             db.execute("insert into user (email, password, water_count, plant_water_count) VALUES (?, ?, 0, 0)",
                    [email, password])
 
-            return redirect(url_for("index"))
+            return redirect(url_for("login_user_page"))
 
 
 @app.route('/login_user', methods=["POST"])
