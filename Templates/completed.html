@@ -1,19 +1,21 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-12">
-            <h1>
-                Completed
-            </h1>
-        </div>
-    </div>
-    <div class="row">
-        {# The amount of plants completed will display #}
-        {%for i in range(0, plants_completed)%}
-            <div class="col-sm-4">
-                <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image">
+    <div class="bg">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>
+                    Completed
+                </h1>
             </div>
-        {% endfor %}
+        </div>
+        <div class="row">
+            {# The amount of plants completed will display #}
+            {%for i in range(0, plants_completed)%}
+                <div class="col-sm-4">
+                    <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image">
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
