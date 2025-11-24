@@ -2,12 +2,12 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-4" id="list">
             <h1>
                 To-Do List
             </h1>
                 {# Adding tasks form #}
-                <form action="{{ url_for('add_task') }}" method="post" class="add-entry">
+                <form action="{{ url_for('add_task') }}" method="post" class="add-entry" id="list">
                     <label for="name">Task Name:</label>
                         <input type="text" size="30" id="name" name="task_name" class="form-control">
                     <label for="date">Start date:</label>
@@ -20,7 +20,7 @@
                 </form>
 
             {# filter tasks form #}
-          <form action="{{ url_for('index') }}" method="post" class="filter-entries">
+          <form action="{{ url_for('index') }}" method="post" class="filter-entries" id="cat_search_form">
            <label for="category_dropdown">Category search:</label>
                 <select name="category" id="category_dropdown" class="form-select">
                     <option name="category" value="">All Categories</option>
@@ -75,12 +75,12 @@
                 {% endfor %}
             </ul>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-4" id="plant">
             <h1>
                 Garden
             </h1>
             <div class="row">
-                <p>Current water: {{ user_water }}</p>
+                <p id="text">Current water: {{ user_water }}</p>
             </div>
             {# Button waters the current plant if they have available water #}
             <form action = "{{ url_for("water_plant") }}" method="post">
@@ -102,7 +102,7 @@
             {# Show plant 1 as the default state #}
             <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
             <div class="row">
-                <p>Water to put plant in garden: {{ water_to_garden }}</p>
+                <p id="text">Water to put plant in garden: {{ water_to_garden }}</p>
             </div>
         </div>
     </div>
