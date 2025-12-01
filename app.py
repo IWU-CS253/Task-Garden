@@ -285,17 +285,14 @@ def login_user():
         # Prompts user to create account if email doesn't exist
         if login is None:
             flash("User does not exist, please create account")
-            print("1")
             return render_template("new_user.html")
 
         # Prompts user to retry password if it is incorrect
         elif login["password"] != password:
-            print("2")
             flash("Password is incorect")
             return render_template("login.html")
 
         else:
-            print("3")
             return render_template('index.html')
 
 @app.route('/create_user_page', methods=["GET"])
