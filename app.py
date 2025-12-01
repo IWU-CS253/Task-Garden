@@ -279,20 +279,21 @@ def login_user():
 
     # Searches for the email and password
     else:
-        login = db.execute("select user_id, email, password from user where email = ? and password = ?",
-                        [email, password]).fetchone()
+        login = db.execute("select user_id, email, password from user where email = ?",
+                           [email]).fetchone()
 
         # Prompts user to create account if email doesn't exist
-        if login["email"] is None:
-            flash("User with given email does not exist, please create account")
-            return render_template("create_user.html")
+        if login is None:
+            flash("User does not exist, please create account")
+            return render_template("new_user.html")
 
-        # Prompts user to retry a password if that is incorrect
-        elif login["password"] is None:
-            flash("Password is incorrect")
+        # Prompts user to retry password if it is incorrect
+        elif login["password"] != password:
+            flash("Password is incorect")
+            return render_template("login.html")
 
         else:
-            return redirect(url_for("index"))
+            return render_template('index.html')
 
 @app.route('/create_user_page', methods=["GET"])
 def create_user_page():
