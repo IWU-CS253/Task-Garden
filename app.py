@@ -259,6 +259,7 @@ def create_user():
             # Put the username and password in the database
             db.execute("insert into user (email, password, water_count, plant_water_count) VALUES (?, ?, 0, 0)",
                    [email, password])
+            db.commit()
 
             return redirect(url_for("login_user_page"))
 
