@@ -93,14 +93,14 @@
                         {# Determines which plant to display #}
                         let plant_display = {{ plant }};
                         if (plant_display === 2) {
-                            img.src = "{{url_for('static', filename='plant2.png')}}";
+                            img.src = "{{url_for('static', filename='plant2.png', alt='Medium Sized plant')}}";
                         } else if (plant_display === 3) {
-                            img.src = "{{url_for('static', filename='plant3.png')}}";
+                            img.src = "{{url_for('static', filename='plant3.png', alt='Fully Grown Plant')}}";
                         }
                     };
             </script>
             {# Show plant 1 as the default state #}
-            <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image">
+            <img src="{{url_for('static', filename='plant1.png')}}" id="plant_image" alt='smallest plant'>
             <div class="row">
                 <p id="text">Water to put plant in garden: {{ water_to_garden }}</p>
             </div>
