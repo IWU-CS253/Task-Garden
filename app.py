@@ -51,10 +51,10 @@ def get_db():
 def index():
     """Main page"""
     db = get_db()
-    user_id = session.get("user_id", 1)
+    user_id = session.get("user_id", None)
 
     # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
-    if user_id == 1:
+    if user_id == None:
         return render_template("login.html")
 
     # Gets the amount of times the user has watered a plant
@@ -141,7 +141,7 @@ def add_task():
 def complete_task():
     """Marks a given task as completed"""
     db = get_db()
-    user_id = session.get("user_id", 1)
+    user_id = session.get("user_id", None)
 
     # Marks the task clicked on as completed
     db.execute('update task set task_status = true where taskid = ?',
@@ -174,7 +174,7 @@ def delete_task():
 def view_completed_tasks():
     """Allows the user to view their completed tasks."""
     db = get_db()
-    user_id = session.get("user_id", 1)
+    user_id = session.get("user_id", None)
 
     task = db.execute('Select * from task where user_id = ? and task_status = 1 Order by task_date DESC',
                      [user_id]).fetchall()
@@ -186,7 +186,7 @@ def view_completed_tasks():
 def completed_plants():
     """Shows the user all the plants they have completed"""
     db = get_db()
-    user_id = session.get("user_id", 1)
+    user_id = session.get("user_id", None)
 
     # Gets the amount of times the user has watered a plant
     result = db.execute(
@@ -206,7 +206,7 @@ def completed_plants():
 def water_plant():
     """Lets user water the current plant"""
     db = get_db()
-    user_id = session.get("user_id", 1)
+    user_id = session.get("user_id", None)
 
     # Gets water data from database
     user_data = db.execute('SELECT water_count, plant_water_count FROM user WHERE user_id=?',
