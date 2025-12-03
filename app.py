@@ -303,3 +303,8 @@ def create_user_page():
 @app.route('/login_user_page', methods=["GET"])
 def login_user_page():
     return render_template('login.html')
+
+@app.route('/logout', methods=["GET"])
+def logout_user():
+    session["user_id"] = None
+    return render_template('login.html')
