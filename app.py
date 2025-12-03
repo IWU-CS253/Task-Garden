@@ -127,9 +127,10 @@ def close_db(error):
 def add_task():
     """Adds a task to the database."""
     db = get_db()
+    user_id = session.get("user_id")
 
     db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, ?)',
-               [request.form['user_id'], request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
+               [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
     db.commit()
 
     flash('Successfully added task!')
