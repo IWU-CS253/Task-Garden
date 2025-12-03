@@ -293,6 +293,7 @@ def login_user():
             return render_template("login.html")
 
         else:
+            session["user_id"] = login["user_id"]
             return render_template('index.html')
 
 @app.route('/create_user_page', methods=["GET"])
