@@ -10,11 +10,13 @@
     <body>
         <nav class="navbar navbar-expand-md fixed-top navbar-inverse">
             <div class="container-fluid">
+
                 <div class="navbar-header">
                     <a class="navbar-brand" href="{{ url_for('index') }}">
                         Task Garden
                     </a>
                 </div>
+
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="{{ url_for('view_completed_tasks') }}">
@@ -27,6 +29,15 @@
                         </a>
                     </li>
                 </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="{{ url_for('logout_user') }}" class="text-danger">
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+
             </div>
         </nav>
         {% block body %}{% endblock %}
