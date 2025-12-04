@@ -309,3 +309,14 @@ def login_user_page():
 def logout_user():
     session["user_id"] = None
     return render_template('login.html')
+
+@app.route('/timer', methods=["GET"])
+def timer():
+    """Allows the user to view their tasks through the timer page."""
+    db = get_db()
+    user_id = session.get("user_id", None)
+
+    task = db.execute('Select * from task where user_id = ? and task_status = 0 Order by task_date DESC',
+                      [user_id]).fetchall()
+
+    return render_template('timer.html', task=task)

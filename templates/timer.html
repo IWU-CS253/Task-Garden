@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div>
+        <h1>
+            Focus Timer
+        </h1>
+        <h1 id="countdown">60:00</h1>
+        <h2 id="done_alert" style="display: none;">Focus Session Done!</h2>
+        <button id="start_button" class="btn btn-primary" onclick="timer_update()">Start</button>
+        <button id="stop_button" class="btn btn-alert" onclick="end_timer()">Stop</button>
+        <script>
+            const display = document.getElementById('countdown');
+            const done = document.getElementById('done_alert');
+            let seconds = 0;
+            let minutes = 60;
+            let interval;
+
+            function timer_update() {
+                interval = setInterval(() => {
+                    if(seconds === 0 && minutes === 0){
+                        done.style.display = 'block';
+                        end_timer();
+                    }else{
+                        if(seconds === 0){
+                        seconds = 59;
+                        minutes--;
+                        }else{
+                            seconds--;
+                        }
+                        display.textContent = `${minutes}:${seconds}`
+                    }
+
+                }, 1000)
+            }
+
+            function end_timer(){
+                clearInterval(interval);
+                interval = null;
+                display.textContent = "60:00";
+            }
+        </script>
+    <h3>Check off tasks during your focus session:</h3>
+    </div>
+      {# filter tasks form #}
+      <form action="{{ url_for('index') }}" method="post" class="filter-entries" id="cat_search_form">
+       <label for="category_dropdown">Category search:</label>
+            <select name="category" id="category_dropdown" class="form-select">
+                <option name="category" value="">All Categories</option>
+                {% for cat in categories %}
+                    {% if cat.task_category %}
+                        <option name="category" value="{{ cat.task_category }}">{{ cat.task_category }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+           <input type="submit" value="Search" class="btn btn-success">
+      </form>
+
+        {# Display task name and task category #}
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-sm-6">
+                        Task name
+                    </div>
+                    <div class="col-sm-6">
+                        Task category
+                    </div>
+                </div>
+            </li>
+        {# Display tasks along with their categories #}
+            {%for i in task%}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{ i.task_name }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ i.task_category }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        {# Complete and delete task buttons #}
+                        <div class="col-sm-2">
+                            <form action="{{ url_for('complete_task') }}" method="post" class="delete-entry">
+                                <input hidden name="taskid" value="{{ i.taskid }}">
+                                <input type="submit" value="Complete" class="btn btn-success">
+                            </form>
+                        </div>
+                        <div class="col-sm-3">
+                            <form action="{{ url_for('delete_task') }}" method="post" class="delete-entry">
+                                <input hidden name="taskid" value="{{ i.taskid }}">
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+{% endblock %}
