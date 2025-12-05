@@ -57,13 +57,13 @@
                         </div>
                         <div class="row">
                             {# Complete and delete task buttons #}
-                            <div class="col-sm-2">
+                            <div class="col-sm-6">
                                 <form action="{{ url_for('complete_task') }}" method="post" class="delete-entry">
                                     <input hidden name="taskid" value="{{ i.taskid }}">
                                     <input type="submit" value="Complete" class="btn btn-success">
                                 </form>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-6">
                                 <form action="{{ url_for('delete_task') }}" method="post" class="delete-entry">
                                     <input hidden name="taskid" value="{{ i.taskid }}">
                                     <input type="submit" value="Delete" class="btn btn-danger">
