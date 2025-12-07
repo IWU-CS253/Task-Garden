@@ -12,14 +12,25 @@
         <script>
             const display = document.getElementById('countdown');
             const done = document.getElementById('done_alert');
+            const startBtn = document.getElementById('start_button');
+            const stopBtn = document.getElementById('stop_button');
             let seconds = 0;
             let minutes = 60;
             let interval;
 
+            startBtn.addEventListener("click", timer_update)
+            stopBtn.addEventListener("click", end_timer)
+
+
             function timer_update() {
+                if (interval != null) return;
+                startBtn.disabled = true
+
+
                 interval = setInterval(() => {
                     if(seconds === 0 && minutes === 0){
                         done.style.display = 'block';
+
                         end_timer();
                     }else{
                         if(seconds === 0){
@@ -37,7 +48,11 @@
             function end_timer(){
                 clearInterval(interval);
                 interval = null;
+
+                minutes = 60;
+                seconds = 0;
                 display.textContent = "60:00";
+                startBtn.disabled = false
             }
         </script>
     <h3>Check off tasks during your focus session:</h3>
