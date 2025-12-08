@@ -3,40 +3,48 @@
     <head>
         <title>Task Garden</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/style.css">
     </head>
 
     <body>
         <div class="container">
-            <h1>
-                Create Account
-            </h1>
+            <div class="col-sm-6 col-sm-offset-3">
+                <div class="login-panel">
+                    <h1 class="text-center">
+                        Welcome to Task Garden
+                    </h1>
+                    <p class="text-center text-muted">Grow your productivity</p>
+                    <h3 class="text-center">
+                        Create Account
+                    </h3>
+                    <form action="{{ url_for('create_user') }}" method="post">
+                        <div class="form-group">
+                            <label for="email">
+                                Email
+                            </label>
+                            </br>
+                            <input type="email" name="email" placeholder="Email" class="form-control" autofocus required>
+                        </div>
 
-            <form action="{{ url_for('create_user') }}" method="post" class="form-group">
-                <label for="email">
-                    Email
-                </label>
-                </br>
-                <input type="email" name="email" placeholder="Email" autofocus required>
-                </br></br>
+                        <div class="form-group">
+                            <label>
+                                Password
+                            </label>
+                            <br>
+                            <input type="password" name="password" placeholder="Password" class="form-control" minlength="8" oninvalid="this.setCustomValidity('Password must be at least 8 characters long')" oninput="this.setCustomValidity('')" required>
+                        </div>
 
-                <label>
-                    Password
-                </label>
-                <br>
-                <input type="password" name="password" placeholder="Password" minlength="8" oninvalid="this.setCustomValidity('Password must be at least 8 characters long')" oninput="this.setCustomValidity('')" required>
-                <br><br>
+                        <input type="submit" class="btn btn-primary btn-full" value="Create Account">
+                    </form>
 
-                <input type="submit" value="Create Account">
-            </form>
-
-        <h3>
-            Have an account?
-        </h3>
-        <a href="/login_user_page">
-            <button>
-                Login
-            </button>
-        </a>
-    </div>
+                <p class="text-center">Have an account?</p>
+                <a href="/login_user_page" class="btn btn-success btn-full create-btn">
+                    <button>
+                        Login
+                    </button>
+                </a>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
