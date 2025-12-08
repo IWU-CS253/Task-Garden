@@ -128,13 +128,20 @@ def add_task():
     """Adds a task to the database."""
     db = get_db()
     user_id = session.get("user_id")
+    name = request.form["task_name"]
+    date = request.form['task_date']
+    category = request.form['task_category']
 
-    db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, 0)',
-               [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category']])
-    db.commit()
+    if name and date and category:
+        db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, 0)',
+                   [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category']])
+        db.commit()
 
-    flash('Successfully added task!')
-    return redirect(url_for('index'))
+        flash('Successfully added task!')
+        return redirect(url_for('index'))
+    else:
+        flash('Please fill out all fields')
+        return redirect(url_for("index"))
 
 
 @app.route('/complete_task', methods=['POST'])
@@ -250,9 +257,15 @@ def create_user():
     email = request.form["email"]
     password = request.form["password"]
 
-    # Prompts user to fill out the form
+    # checks to make sure that password is 8 characters
+    if len(password) < 8:
+        flash("Password must be at least 8 characters long.")
+        return redirect(url_for('create_user_page'))
+
+    # checks to make sure form was filled out
     if not email or not password:
         flash("Please fill out all fields")
+        return redirect(url_for('create_user_page'))
     else:
         email_check = db.execute("select email from user where email = ?",
                            [email]).fetchone()
