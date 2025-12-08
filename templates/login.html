@@ -4,12 +4,13 @@
         <title>Task Garden</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/style.css">
+        <link rel="icon" type="image/x-icon" href="/static/plant_icon.png">
     </head>
 
     <body>
         <div class="container">
             <div class="col-sm-6 col-sm-offset-3">
-                <div class="login-panel">
+                <div class="card">
                     <h1 class="text-center">
                         Welcome to Task Garden
                     </h1>
@@ -34,11 +35,14 @@
                             <input type="password" name="password" class="form-control" placeholder="Password" required>
                         </div>
 
-                        <input type="submit" class="btn btn-primary btn-full" value="Log In">
+                        <input type="submit" class="btn btn-primary btn-block" value="Log In">
                     </form>
                     <p class="text-center">Don't have an account?</p>
-                    <a href="/create_user_page" class="btn btn-success btn-full">Create Account</a>
+                    <div style="width: 100%;">
+                        <a href="/create_user_page" class="btn btn-success btn-block">Create Account</a>
+                    </div>
                 </div>
+
             </div>
         </div>
     </body>

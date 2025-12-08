@@ -1,38 +1,45 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-12">
-            <h1>
-                Completed Tasks
-            </h1>
-        </div>
-    </div>
-    <ul class="list-group">
-                {# Display task name and task category #}
-                <li class="list-group-item">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="card">
                     <div class="row">
-                        <div class="col-sm-6">
-                            Task name
-                        </div>
-                        <div class="col-sm-6">
-                            Task category
+                        <div class="col-sm-12">
+                            <h1>
+                                Completed Tasks
+                            </h1>
                         </div>
                     </div>
-                </li>
-                {%for i in task%}
-                    {# Display tasks along with their categories #}
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                {{ i.task_name }}
+                    <ul class="list-group">
+                        {# Display task name and task category #}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    Task name
+                                </div>
+                                <div class="col-sm-6">
+                                    Task category
+                                </div>
                             </div>
-                            <div class="col-sm-2">
-                                {{ i.task_category }}
-                            </div>
-                        </div>
-                    </li>
-                {% endfor %}
-    </ul>
-
+                        </li>
+                        {%for i in task%}
+                            {# Display tasks along with their categories #}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        {{ i.task_name }}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {{ i.task_category }}
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

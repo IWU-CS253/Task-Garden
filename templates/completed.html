@@ -1,21 +1,30 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <div class="bg">
+    <div class="container">
         <div class="row">
-            <div class="col-sm-12">
-                <h1>
-                    Completed
-                </h1>
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="card">
+                    <h1 class="text-center">Completed Plants</h1>
+                    {% if plants_completed > 0 %}
+                        <p class="text-center text-muted">Here's what you've achieved so far!</p>
+                    {% endif %}
+                    {# The amount of plants completed will display #}
+                    <div class="row text-center" style="margin-top: 20px;">
+                    {%for i in range(0, plants_completed)%}
+                        <div class="col-xs-6 col-sm-4" style="margin-bottom: 20px;">
+                            <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image">
+                        </div>
+                    {% endfor %}
+                    {% if plants_completed == 0 %}
+                        <div class="col-sm-12">
+                            <p class="text-center text-muted">No plants completed yet.</p>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            {# The amount of plants completed will display #}
-            {%for i in range(0, plants_completed)%}
-                <div class="col-sm-4">
-                    <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image" alt="Fully Grown Plant {{ i + 1 }}">
-                </div>
-            {% endfor %}
-        </div>
     </div>
+
 {% endblock %}

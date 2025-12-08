@@ -4,12 +4,13 @@
         <title>Task Garden</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/style.css">
+        <link rel="icon" type="image/x-icon" href="/static/plant_icon.png">
     </head>
 
     <body>
         <div class="container">
             <div class="col-sm-6 col-sm-offset-3">
-                <div class="login-panel">
+                <div class="card">
                     <h1 class="text-center">
                         Welcome to Task Garden
                     </h1>
@@ -34,15 +35,13 @@
                             <input type="password" name="password" placeholder="Password" class="form-control" minlength="8" oninvalid="this.setCustomValidity('Password must be at least 8 characters long')" oninput="this.setCustomValidity('')" required>
                         </div>
 
-                        <input type="submit" class="btn btn-primary btn-full" value="Create Account">
+                        <input type="submit" class="btn btn-primary btn-block" value="Create Account">
                     </form>
 
                 <p class="text-center">Have an account?</p>
-                <a href="/login_user_page" class="btn btn-success btn-full create-btn">
-                    <button>
-                        Login
-                    </button>
-                </a>
+                    <div style="width: 100%;">
+                        <a href="/login_user_page" class="btn btn-success btn-block">Login</a>
+                    </div>
                 </div>
             </div>
         </div>
