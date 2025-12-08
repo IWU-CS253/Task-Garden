@@ -23,7 +23,7 @@
                     Password
                 </label>
                 <br>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Password" minlength="8" oninvalid="this.setCustomValidity('Password must be at least 8 characters long')" oninput="this.setCustomValidity('')" required>
                 <br><br>
 
                 <input type="submit" value="Create Account">
