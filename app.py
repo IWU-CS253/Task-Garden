@@ -144,7 +144,7 @@ def complete_task():
     user_id = session.get("user_id", None)
 
     # Marks the task clicked on as completed
-    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]) == user_id:
+    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0] == user_id:
         db.execute('update task set task_status = true where taskid = ?',
                    [request.form['taskid']])
 
@@ -164,7 +164,9 @@ def delete_task():
     """Completely deletes a task without giving water to the user."""
     db = get_db()
     user_id = session.get("user_id", None)
-    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]) == user_id:
+    print(user_id)
+    print(db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0])
+    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0] == user_id:
         db.execute('delete from task where taskid = ?',
                    [request.form['taskid']])
         db.commit()
