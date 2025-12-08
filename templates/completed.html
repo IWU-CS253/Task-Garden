@@ -13,7 +13,7 @@
                     <div class="row text-center" style="margin-top: 20px;">
                     {%for i in range(0, plants_completed)%}
                         <div class="col-xs-6 col-sm-4" style="margin-bottom: 20px;">
-                            <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image">
+                            <img src="{{url_for('static', filename='plant3.png')}}" id="plant_image" alt="Fully Grown Plant {{ i + 1 }}">
                         </div>
                     {% endfor %}
                     {% if plants_completed == 0 %}
