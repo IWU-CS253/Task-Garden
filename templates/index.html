@@ -28,7 +28,6 @@
 
                     <label for="category">Category:</label>
                         <input type="text" size="30" id="category" name="task_category" class="form-control">
-                    <input hidden name="task_status" value=0>
                     <input type="submit" value="Add" class="btn btn-primary">
                 </form>
 
@@ -97,7 +96,6 @@
             </div>
             {# Button waters the current plant if they have available water #}
             <form action = "{{ url_for("water_plant") }}" method="post">
-                <input hidden name="user_id" value="{{ user_id }}">
                 <input type="Submit" value="Water" class="btn btn-primary">
             </form>
             {# Determines which plant to show #}

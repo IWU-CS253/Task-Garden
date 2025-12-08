@@ -53,7 +53,7 @@ def index():
     db = get_db()
     user_id = session.get("user_id", None)
 
-    # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
+    # If a user is not signed in, prompt them to sign in
     if user_id == None:
         return render_template("login.html")
 
@@ -129,8 +129,8 @@ def add_task():
     db = get_db()
     user_id = session.get("user_id")
 
-    db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, ?)',
-               [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
+    db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, 0)',
+               [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category']])
     db.commit()
 
     flash('Successfully added task!')
@@ -295,7 +295,7 @@ def login_user():
 
         # Prompts user to retry password if it is incorrect
         elif login["password"] != password:
-            flash("Password is incorect")
+            flash("Password is incorrect")
             return render_template("login.html")
 
         else:
