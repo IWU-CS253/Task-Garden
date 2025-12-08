@@ -163,11 +163,13 @@ def complete_task():
 def delete_task():
     """Completely deletes a task without giving water to the user."""
     db = get_db()
-    db.execute('delete from task where taskid = ?',
-               [request.form['taskid']])
-    db.commit()
+    user_id = session.get("user_id", None)
+    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]) == user_id:
+        db.execute('delete from task where taskid = ?',
+                   [request.form['taskid']])
+        db.commit()
 
-    flash('Successfully completed task!')
+        flash('Successfully completed task!')
     return redirect(url_for('index'))
 
 
