@@ -53,7 +53,7 @@ def index():
     db = get_db()
     user_id = session.get("user_id", None)
 
-    # COMMENT OUT THESE TWO LINES FOR TESTING! (uncomment before committing changes)
+    # If a user is not signed in, prompt them to sign in
     if user_id == None:
         return render_template("login.html")
 
@@ -133,8 +133,8 @@ def add_task():
     category = request.form['task_category']
 
     if name and date and category:
-        db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, ?)',
-                   [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category'], request.form["task_status"]])
+        db.execute('insert into task (user_id, task_name, task_date, task_category, task_status) values (?, ?, ?, ?, 0)',
+                   [user_id, request.form['task_name'], request.form['task_date'], request.form['task_category']])
         db.commit()
 
         flash('Successfully added task!')
@@ -151,17 +151,18 @@ def complete_task():
     user_id = session.get("user_id", None)
 
     # Marks the task clicked on as completed
-    db.execute('update task set task_status = true where taskid = ?',
-               [request.form['taskid']])
+    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0] == user_id:
+        db.execute('update task set task_status = true where taskid = ?',
+                   [request.form['taskid']])
 
-    # Gives the user +1 water
-    water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
-    new_water = water["water_count"] + 1
-    db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
+        # Gives the user +1 water
+        water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
+        new_water = water["water_count"] + 1
+        db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
 
-    db.commit()
+        db.commit()
 
-    flash('Successfully completed task!')
+        flash('Successfully completed task!')
     return redirect(url_for('index'))
 
 
@@ -169,11 +170,13 @@ def complete_task():
 def delete_task():
     """Completely deletes a task without giving water to the user."""
     db = get_db()
-    db.execute('delete from task where taskid = ?',
-               [request.form['taskid']])
-    db.commit()
+    user_id = session.get("user_id", None)
+    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0] == user_id:
+        db.execute('delete from task where taskid = ?',
+                   [request.form['taskid']])
+        db.commit()
 
-    flash('Successfully completed task!')
+        flash('Successfully completed task!')
     return redirect(url_for('index'))
 
 
@@ -303,7 +306,7 @@ def login_user():
 
         # Prompts user to retry password if it is incorrect
         elif login["password"] != password:
-            flash("Password is incorect")
+            flash("Password is incorrect")
             return render_template("login.html")
 
         else:
