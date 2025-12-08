@@ -17,3 +17,16 @@
 .bg {
     background-color: lightblue;
 }
+
+body {
+    background-color: #f5f5f5;
+}
+.login {
+    margin-top: 80px;
+    padding: 25px;
+    border-radius: 6px;
+    background: white;
+}
+.btn-full {
+    width: 100%;
+}
