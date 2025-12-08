@@ -164,8 +164,6 @@ def delete_task():
     """Completely deletes a task without giving water to the user."""
     db = get_db()
     user_id = session.get("user_id", None)
-    print(user_id)
-    print(db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0])
     if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]).fetchone()[0] == user_id:
         db.execute('delete from task where taskid = ?',
                    [request.form['taskid']])
