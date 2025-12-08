@@ -5,53 +5,105 @@
         <h1>
             Focus Timer
         </h1>
+        <label for="time_input">Enter minutes:</label>
+        <input type="number" id="time_input" min="1" value="60">
+        <button id="set_time_button" class="btn btn-secondary" onclick="set_time()">Set Time</button>
         <h1 id="countdown">60:00</h1>
         <h2 id="done_alert" style="display: none;">Focus Session Done!</h2>
         <button id="start_button" class="btn btn-primary" onclick="timer_update()">Start</button>
-        <button id="stop_button" class="btn btn-alert" onclick="end_timer()">Stop</button>
+        <button id="pause_button" class="btn btn-secondary" onclick="pause_timer()">Pause</button>
+        <button id="stop_button" class="btn btn-alert" onclick="end_timer()">Reset</button>
         <script>
+            // getting elements to change later
             const display = document.getElementById('countdown');
             const done = document.getElementById('done_alert');
             const startBtn = document.getElementById('start_button');
             const stopBtn = document.getElementById('stop_button');
+            const pauseBtn = document.getElementById('pause_button');
+            const timeInput = document.getElementById('time_input');
+            const setTimeBtn = document.getElementById('set_time_button');
+
+            // setting minutes and seconds to start time
             let seconds = 0;
             let minutes = 60;
+            let inputMinutes = 60;
             let interval;
 
-            startBtn.addEventListener("click", timer_update)
-            stopBtn.addEventListener("click", end_timer)
+            // sets timer to user inputted time
+            function set_time() {
+                const userMinutes = parseInt(timeInput.value); // found parseint from here: https://www.w3schools.com/jsref/jsref_parseint.asp
 
+                // checks if input is correct
+                if (isNaN(userMinutes) || userMinutes <= 0) {
+                    alert("Please enter a valid number of minutes.");
+                    return;
+                }
 
+                // sets variables to given time
+                inputMinutes = Number(userMinutes);
+                minutes = inputMinutes;
+                seconds = 0;
+
+                // displays new time
+                display.textContent = `${minutes}:00`;
+            }
+
+            // this function runs the timer
             function timer_update() {
+                // checks if interval exists
                 if (interval != null) return;
+
+                // disables start button after timer has been started
                 startBtn.disabled = true
 
-
+                // starts interval loop
                 interval = setInterval(() => {
+                    // checks if timer has ended
                     if(seconds === 0 && minutes === 0){
                         done.style.display = 'block';
 
                         end_timer();
                     }else{
+                        // updates timer
                         if(seconds === 0){
-                        seconds = 59;
-                        minutes--;
+                            seconds = 59;
+                            minutes--;
                         }else{
                             seconds--;
                         }
-                        display.textContent = `${minutes}:${seconds}`
+                        display.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`
                     }
 
                 }, 1000)
             }
 
-            function end_timer(){
+            // this function pauses the timer
+            function pause_timer() {
+                // checks for an existing interval
+                if (interval === null) return;
+
+                // clears existing interval
                 clearInterval(interval);
                 interval = null;
 
-                minutes = 60;
+                // reenables start button
+                startBtn.disabled = false;
+            }
+
+            // this function ends the timer and resets variables for a clean slate
+            function end_timer(){
+                // clears interval
+                clearInterval(interval);
+                interval = null;
+
+                // resets variables
+                minutes = inputMinutes;
                 seconds = 0;
-                display.textContent = "60:00";
+
+                // resets display
+                display.textContent = `${minutes}:00`;
+
+                // reenables start button
                 startBtn.disabled = false
             }
         </script>
