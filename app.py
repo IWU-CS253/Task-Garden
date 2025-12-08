@@ -144,17 +144,18 @@ def complete_task():
     user_id = session.get("user_id", None)
 
     # Marks the task clicked on as completed
-    db.execute('update task set task_status = true where taskid = ?',
-               [request.form['taskid']])
+    if db.execute('select user_id from task where taskid = ?', [request.form['taskid']]) == user_id:
+        db.execute('update task set task_status = true where taskid = ?',
+                   [request.form['taskid']])
 
-    # Gives the user +1 water
-    water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
-    new_water = water["water_count"] + 1
-    db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
+        # Gives the user +1 water
+        water = db.execute("SELECT water_count FROM user WHERE user_id = ?",(user_id,)).fetchone()
+        new_water = water["water_count"] + 1
+        db.execute('UPDATE user SET water_count = ? WHERE user_id = ?',(new_water,user_id))
 
-    db.commit()
+        db.commit()
 
-    flash('Successfully completed task!')
+        flash('Successfully completed task!')
     return redirect(url_for('index'))
 
 
