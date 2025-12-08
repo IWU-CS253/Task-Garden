@@ -254,9 +254,15 @@ def create_user():
     email = request.form["email"]
     password = request.form["password"]
 
-    # Prompts user to fill out the form
+    # checks to make sure that password is 8 characters
+    if len(password) < 8:
+        flash("Password must be at least 8 characters long.")
+        return redirect(url_for('create_user_page'))
+
+    # checks to make sure form was filled out
     if not email or not password:
         flash("Please fill out all fields")
+        return redirect(url_for('create_user_page'))
     else:
         email_check = db.execute("select email from user where email = ?",
                            [email]).fetchone()
