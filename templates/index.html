@@ -11,7 +11,21 @@
                     <label for="name">Task Name:</label>
                         <input type="text" size="30" id="name" name="task_name" class="form-control">
                     <label for="date">Start date:</label>
+                    <script>
+{#                        Determines the date to display#}
+                        window.onload = function() {
+                            const date = new Date();
+                            const year = date.getFullYear();
+                            const month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            const day = ("0" + date.getDate()).slice(-2);
+                            const fulldate = (year + "-" + month + "-" + day);
+                            document.getElementById("date_div").innerHTML = '<input class="form-control" type="date" id="date" name="task_date" value="' + fulldate + '" min="' + fulldate + '" max="2999-12-31">';
+                    };
+                    </script>
+                    <div id="date_div">
                         <input class="form-control" type="date" id="date" name="task_date" value="2025-11-15" min="2025-11-15" max="2999-12-31">
+                    </div>
+
                     <label for="category">Category:</label>
                         <input type="text" size="30" id="category" name="task_category" class="form-control">
                     <input hidden name="task_status" value=0>
