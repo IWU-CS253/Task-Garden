@@ -3,6 +3,7 @@ from math import floor
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, g, redirect, url_for, render_template, flash, session
 from flask_session import Session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # adapted from Flaskr
 app = Flask(__name__)
@@ -262,23 +263,32 @@ def create_user():
         flash("Password must be at least 8 characters long.")
         return redirect(url_for('create_user_page'))
 
-    # checks to make sure form was filled out
+    # checks to make sure fields are completed
     if not email or not password:
         flash("Please fill out all fields")
         return redirect(url_for('create_user_page'))
-    else:
-        email_check = db.execute("select email from user where email = ?",
-                           [email]).fetchone()
-        if email_check:
-            flash("Account already exists with this email, please login")
-            return render_template("login.html")
-        else:
-            # Put the username and password in the database
-            db.execute("insert into user (email, password, water_count, plant_water_count) VALUES (?, ?, 0, 0)",
-                   [email, password])
-            db.commit()
 
-            return redirect(url_for("login_user_page"))
+    # checks that email doesnt already have an account
+    email_check = db.execute(
+        "SELECT email FROM user WHERE email = ?",
+        [email]
+    ).fetchone()
+
+    if email_check:
+        flash("Account already exists with this email, please login")
+        return render_template("login.html")
+
+    # hashes password using werkzeug in Flask
+    hashed_pw = generate_password_hash(password)
+
+    # adds new password to db
+    db.execute(
+        "INSERT INTO user (email, password, water_count, plant_water_count) VALUES (?, ?, 0, 0)",
+        [email, hashed_pw]
+    )
+    db.commit()
+
+    return redirect(url_for("login_user_page"))
 
 
 @app.route('/login_user', methods=["POST"])
@@ -289,29 +299,30 @@ def login_user():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # Prompts user to fill out form
+    # checks that user has completed both fields
     if not email or not password:
         flash("Please fill out all fields")
         return render_template("login.html")
 
-    # Searches for the email and password
-    else:
-        login = db.execute("select user_id, email, password from user where email = ?",
-                           [email]).fetchone()
+    # finds user using email
+    login = db.execute(
+        "SELECT user_id, email, password FROM user WHERE email = ?",
+        [email]
+    ).fetchone()
 
-        # Prompts user to create account if email doesn't exist
-        if login is None:
-            flash("User does not exist, please create account")
-            return render_template("new_user.html")
+    # if none found, redirect user to create page
+    if login is None:
+        flash("User does not exist, please create account")
+        return render_template("new_user.html")
 
-        # Prompts user to retry password if it is incorrect
-        elif login["password"] != password:
-            flash("Password is incorrect")
-            return render_template("login.html")
+    # uses werkzeug in Flask to check password
+    if not check_password_hash(login["password"], password):
+        flash("Password is incorrect")
+        return render_template("login.html")
 
-        else:
-            session["user_id"] = login["user_id"]
-            return redirect(url_for("index"))
+    # logs in user
+    session["user_id"] = login["user_id"]
+    return redirect(url_for("index"))
 
 @app.route('/create_user_page', methods=["GET"])
 def create_user_page():
